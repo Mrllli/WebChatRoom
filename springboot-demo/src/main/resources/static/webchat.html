@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html><head>	<meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+	<script src="http://libs.baidu.com/jquery/1.9.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> 
+</head>
+<body>
+	<p></p>
+	<div class="row">
+	<div class="col-lg-2">
+		<input type="text" class="form-control" placeholder="姓名" id="name">
+	</div>
+	
+	<div class="col-lg-4">
+		<input type="text" class="form-control" placeholder="文本输入" id="msgContent">
+	</div>
+	<input class="btn btn-default" type="button" onclick="CHAT.chat()" value="发送信息">
+	</div>
+	
+
+	<hr/>
+
+	<p class="text-muted">文本显示区域</p>
+	<div id="receiveMsg"></div>
+
+	<script type="text/javascript">
+		window.CHAT = {
+
+			socket: null,
+			init:function(){
+				if(window.WebSocket){
+					//创建websocket
+					CHAT.socket = new WebSocket("ws://129.211.61.234:8888/ws");
+					CHAT.socket.onopen = function(){
+						console.log("建立成功");
+
+					},
+					CHAT.socket.close = function(){
+						console.log("关闭");
+					},
+
+					CHAT.socket.onmessage = function(e){
+						console.log("接收消息" + e.data);
+						var rec = document.getElementById('receiveMsg');
+						var html = rec.innerHTML;//
+						//处理json
+						var tem = '{"name":"John","age":30,"city":"New York"}';
+						var datas = JSON.parse(e.data);
+						var name = datas[0].name;
+						var mes = datas[0].message;
+						
+						//嵌入
+						rec.innerHTML = html + "</br>" + '<span class="label label-info">' + name + '</span>'+'<div class = "chat-bubble chat-bubble-left">' + mes + '</div>'
+					}
+
+				}else{
+					console.log("error");
+				}
+			},
+
+			chat:function(){
+				var msg = document.getElementById("msgContent").value;
+				var name = document.getElementById("name").value;
+				console.log(msg);
+				if((msg != '') && (name != '')){
+					msg = name + ":-" + msg;
+					CHAT.socket.send(msg);
+				}				
+			}
+		};
+
+		CHAT.init();
+
+	</script>
+	<div class="comment"></div>
+	<!-- <div class = "chat-bubble chat-bubble-left"></div> -->
+
+	<style type="text/css">
+
+	.chat-bubble{
+	  position: relative;
+	  margin:5px;
+	  padding:5px 5px;
+	  word-break: break-all;
+	  background:#fbb8ac;
+	  border: 1px solid #989898;
+	  border-radius: 5px;
+	  max-width:180px;
+	}
+	 
+	.chat-bubble-left {}
+	.chat-bubble-left:before {
+	  content: '';
+	  position: absolute;
+	  width: 0;
+	  height: 0;
+	  left: -20px;
+	  top:5px;
+	  border: 10px solid;
+	  border-color:transparent #989898 transparent  transparent ;
+	}
+	.chat-bubble-left:after {
+	 content: '';
+	 position: absolute;
+	 width: 0;
+	 height: 0;
+	 left:-16px;
+	 top:7px;
+	 border: 8px solid;
+	 border-color:transparent #fbb8ac transparent  transparent ;
+	}
+
+	</style>
+</body>
+</html>
