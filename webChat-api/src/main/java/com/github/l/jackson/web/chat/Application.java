@@ -3,11 +3,11 @@ package com.github.l.jackson.web.chat;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
 
-@SpringBootApplication(scanBasePackages = "com.github.l.jackson")
-@MapperScan("com.github.l.jackson.web.chat.dao")
+@SpringBootApplication(scanBasePackages = "com.github.l.jackson", exclude = {DataSourceAutoConfiguration.class})
 @ServletComponentScan
 public class Application {
 

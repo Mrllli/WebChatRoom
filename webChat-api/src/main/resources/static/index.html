@@ -1,48 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>主页</title>
+<html><head>	<meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+	<script src="http://libs.baidu.com/jquery/1.9.0/jquery.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> 
 </head>
-<body onload="checkCookie()">
+<body>
+	<p></p>
+	<div class="row">
+	<div class="col-lg-2">
+		<input type="text" class="form-control" placeholder="姓名" id="name">
+	</div>
+	
+	<div class="col-lg-4">
+		<input type="text" class="form-control" placeholder="文本输入" id="msgContent">
+	</div>
+	<input class="btn btn-default" type="button" onclick="CHAT.chat()" value="发送信息">
+	</div>
+	
 
-<form action="/users/query" method="get">
-    <button type="submit">查询全部学生</button>
-</form>
+	<hr/>
 
-<form action="/users/querystudent" method="get">
-    <input type="text" id="name3" name="name" placeholder="请输入查询姓名">
-    <button type="submit">查询学生</button>
-</form>
+	<p class="text-muted">文本显示区域</p>
+	<div id="receiveMsg"></div>
 
-<form action="/users/queryStudentThroughNumber" method="get">
-    <input type="text" id="name4" name="num" placeholder="请输入查询学号">
-    <button type="submit">查询学生</button>
-</form>
+	<script type="text/javascript">
+		window.CHAT = {
 
-<form action="/users/insert" method="get">
-    <input type="text" id="name" name="name" placeholder="请输入插入姓名">
-    <input type="text" id="studentnumber" name="studentnumber" placeholder="请输入学号">
-    <button type="submit">插入学生</button>
-</form>
+			socket: null,
+			init:function(){
+				if(window.WebSocket){
+					//创建websocket
+					CHAT.socket = new WebSocket("ws://localhost:8888/ws");
+					CHAT.socket.onopen = function(){
+						console.log("建立成功");
 
-<form action="/users/update" method="get">
-    <input type="text" id="id1" name="id" placeholder="请输入id">
-    <input type="text" id="name1" name="name" placeholder="请输入姓名">
-    <input type="text" id="studentnumber1" name="studentnumber" placeholder="请输入学号">
-    <button type="submit">更改学生</button>
-</form>
+					},
+					CHAT.socket.close = function(){
+						console.log("关闭");
+					},
 
-<form action="/users/delete" method="get">
-    <input type="text" id="id2" name="id" placeholder="请输入删除学生id">
-    <button type="submit">删除学生</button>
-</form>
+					CHAT.socket.onmessage = function(e){
+						console.log("接收消息" + e.data);
+						var rec = document.getElementById('receiveMsg');
+						var html = rec.innerHTML;//
+						//处理json
+						var tem = '{"name":"John","age":30,"city":"New York"}';
+						var datas = JSON.parse(e.data);
+						var name = datas[0].name;
+						var mes = datas[0].message;
+						
+						//嵌入
+						rec.innerHTML = html + "</br>" + '<span class="label label-info">' + name + '</span>'+'<div class = "chat-bubble chat-bubble-left">' + mes + '</div>'
+					}
 
+				}else{
+					console.log("error");
+				}
+			},
 
+			chat:function(){
+				var msg = document.getElementById("msgContent").value;
+				var name = document.getElementById("name").value;
+				console.log(msg);
+				if((msg != '') && (name != '')){
+					msg = name + ":-" + msg;
+					CHAT.socket.send(msg);
+				}				
+			}
+		};
+
+		CHAT.init();
+
+	</script>
+	<div class="comment"></div>
+	<!-- <div class = "chat-bubble chat-bubble-left"></div> -->
+
+	<style type="text/css">
+
+	.chat-bubble{
+	  position: relative;
+	  margin:5px;
+	  padding:5px 5px;
+	  word-break: break-all;
+	  background:#fbb8ac;
+	  border: 1px solid #989898;
+	  border-radius: 5px;
+	  max-width:180px;
+	}
+	 
+	.chat-bubble-left {}
+	.chat-bubble-left:before {
+	  content: '';
+	  position: absolute;
+	  width: 0;
+	  height: 0;
+	  left: -20px;
+	  top:5px;
+	  border: 10px solid;
+	  border-color:transparent #989898 transparent  transparent ;
+	}
+	.chat-bubble-left:after {
+	 content: '';
+	 position: absolute;
+	 width: 0;
+	 height: 0;
+	 left:-16px;
+	 top:7px;
+	 border: 8px solid;
+	 border-color:transparent #fbb8ac transparent  transparent ;
+	}
+
+	</style>
 </body>
-<!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
-<!-- sweet alert -->
-<script src="plugins/sweetalert/sweetalert.min.js"></script>
-<script src="dist/js/public.js"></script>
 </html>
