@@ -61,7 +61,7 @@
 
 			chat:function(){
 				var msg = document.getElementById("msgContent").value;
-				var name = document.getElementById("name").value;
+				var name = document.cookie;
 				console.log(msg);
 				if((msg != '') && (name != '')){
 					msg = name + ":-" + msg;

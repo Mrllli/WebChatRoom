@@ -1,17 +1,17 @@
 package com.github.l.jackson.web.chat.common;
 
 public class Result {
-    private String token;
+    private String userName;
 
-    public String getToken() {
-        return token;
+    public Result(String userName) {
+        this.userName = userName;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public String getUserName() {
+        return userName;
     }
 
-    public Result(String str){
-        this.token = str;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

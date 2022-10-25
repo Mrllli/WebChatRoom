@@ -15,7 +15,7 @@ function login() {
         return;
     }
 
-    var data = {"name": name, "password": password}
+    var data = {"loginName": name}
     $.ajax({
         type: "POST",//方法类型
         dataType: "json",//预期服务器返回的数据类型
@@ -24,8 +24,7 @@ function login() {
         data: JSON.stringify(data),
         success: function (result) {
             if (result != null) {
-                $('.alert-danger').css("display", "none");
-                setCookie(result.token);
+                setCookie(result.userName);
                 window.location.href = "/";
             }
 
@@ -52,28 +51,7 @@ function login() {
  * @param value
  */
 function setCookie(name) {
-    let cookie = name ;
-    document.cookie = cookie;
-}
-
-
-/**
- * 检查cookie
- */
-function checkCookie() {
-    var data = {"token":document.cookie};
-    $.ajax({
-        type: "POST",//方法类型
-        dataType: "json",//预期服务器返回的数据类型
-        url: "users/check",
-        contentType: "application/json; charset=utf-8",
-        data: JSON.stringify(data),
-        success: function (result){
-            if(result != 1){
-                window.location.href = "/login.html";
-            }
-        }
-    });
+    document.cookie = "userName=" + name;
 }
 
 function showErrorInfo(info) {
